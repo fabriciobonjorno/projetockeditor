@@ -1,0 +1,82 @@
+<%= form_with model: @article, local: true do |f| %>
+  <div class="container">
+    <div class="row">
+      <div class="form-group col-md-2">
+        <%= f.label :title %>
+        <%= f.text_field :title, class: "form-control" %>
+      </div>
+      <div class="form-group col-md-12">
+        <%= f.label :body %>
+        <%= f.text_area :body, class: "form-control" %>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label>Tags</label>
+          <input type="text" id="tag1" name="article[tags]" value="<%= (article.tags.map{|tag| {value: tag.id, text: tag.description}} rescue []).to_json %>" class="form-control" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center">
+    <%= f.submit class: "btn btn-success", data: { disable_with: "Criando....⌛" } %>
+    <%= link_to "Cancelar", articles_path, class: "btn btn-danger ml-1" %>
+  </div>
+
+  <style>
+    .container{
+      margin: 20px;
+    }
+
+    .label-info {
+      background-color: #5bc0de;
+      display: inline-block;
+      padding: 0.2em 0.6em 0.3em;
+      font-size: 75%;
+      font-weight: 700;
+      line-height: 1;
+      color: #fff;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: 0.25em;
+    }
+    .tt-input{
+      width: 100%;
+      min-width: 400px;
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js" referrerpolicy="origin"></script>
+  <script src="https://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js" referrerpolicy="origin"></script>
+  <script>
+    var data = '<%= raw @tags.map{|tag| {value: tag.id, text: tag.description}}.to_json %>';
+    var task = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace("text"),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      local: jQuery.parseJSON(data)
+    });
+    task.initialize();
+    var elt = $("#tag1");
+    elt.tagsinput({
+      itemValue: "value",
+      itemText: "text",
+      typeaheadjs: {
+        name: "task",
+        displayKey: "text",
+        source: task.ttAdapter()
+      }
+    });
+
+    // Exemplo de como adiciona tag manualmente via js
+    // elt.tagsinput("add", {
+    //   value: 1,
+    //   text: "task 1",
+    //   continent: "task"
+    // });
+
+  </script>
+
+
+
+<% end %>
