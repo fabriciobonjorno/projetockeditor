@@ -1,3 +1,2 @@
 <%= @article.title %> <br>
-<%= @article.tags.map{|at| at.tag.description}.join(",") %> <br>
-<%= @article.body %>
+<%= @article.body.html_safe %>
